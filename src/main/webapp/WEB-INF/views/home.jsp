@@ -64,12 +64,12 @@
           href="${pageContext.request.contextPath}/resources/custom-uiux/style.css?v=2">
     <link rel="stylesheet" type="text/css"
           href="${pageContext.request.contextPath}/resources/style-dancu/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/notification/resources/notify.css?v=2">
+<%--    <link rel="stylesheet" type="text/css" href="/notification/resources/notify.css?v=2">--%>
 </head>
 
 <body class="no-js" lang="vi" ng-app="myApp" aaa="<b>imdam</b>">
 <input id="PageContext" type="hidden" value="${pageContext.request.contextPath}" />
-<jsp:include page="./csdl/hokhongcutru-html.jsp"/>
+<jsp:include page="./csdl/hoadonbanhang-html.jsp"/>
 <div id="loading" style="display: none;">
     <%--		<i style="color: #ffffff;" class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>--%>
     <%--		<div class="loader"></div>--%>
