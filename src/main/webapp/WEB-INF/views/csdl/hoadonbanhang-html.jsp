@@ -3,39 +3,24 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-<%--<ul class="breadcrumb">--%>
-<%--    <li><a href=""><span class="icon -ap icon-home"></span> Trang chủ</a></li>--%>
-<%--    <li><a href="javascript:;">Biến động dân cư</a></li>--%>
-<%--    <li><a href="javascript:;">Quản lý biến động hộ không cư trú tại nơi đăng ký thường trú</a></li>--%>
-<%--    <!-- <li><a href="javascript:;">Tìm kiếm</a></li> -->--%>
-<%--</ul>--%>
 <head>
-    <jsp:include page="../js/hodonbanhang-js.jsp"/>
+    <jsp:include page="hodonbanhang-js.jsp"/>
 </head>
 <div class="box">
     <div class="box-body">
         <h1 class="main-title">THÔNG TIN KHÁCH HÀNG</h1>
         <form id="form_quick_search" onsubmit="traCuuDanhSachHoBienDong('traCuuBienDong');return false;">
             <div class="row">
-
                 <div class="col-sm-6 col-xs-12">
-                    <div class="input-right-button">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Họ tên khách hàng </div>
-                            <input class="form-control" type="text" placeholder="Nhập tên khách hàng" name="hoTenKhachHang" id="hoTenKhachHang"
-                                   value="${hoTenKhachHang}" autocomplete="off">
-                        </div>
-                        <div class="actions">
-                            <button type="button" class="btn btn-main" name="dialogTraCuuKhachHang"
-                                    id="dialogTraCuuKhachHang" onclick="traCuuHoCuTruTaiDiaBan('open')">
-                                <span class="nc-icon-outline ui-2_menu-dots"></span>
-                            </button>
-                        </div>
+                    <div class="form-group form-label-top">
+                        <div class="label-text">Họ tên khách hàng<span class="text-danger"> *</span></div>
+                        <input class="form-control" type="text" placeholder="Nhập tên khách hàng" name="hoTenKhachHang" id="hoTenKhachHang"
+                               value="${hoTenKhachHang}" autocomplete="off">
                     </div>
                 </div>
                 <div class="col-sm-6 col-xs-12">
                     <div class="form-group form-label-top">
-                        <div class="label-text">Số điện thoại</div>
+                        <div class="label-text">Số điện thoại<span class="text-danger"> *</span></div>
                         <input class="form-control" type="text" placeholder="Nhập số điện thoại" name="sdtKhachHang" id="sdtKhachHang"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'');"
                                value="${sdtKhachHang}" autocomplete="off">
@@ -45,7 +30,7 @@
             <div class="row">
                 <div class="col-sm-6 col-xs-12">
                     <div class="form-group form-label-top">
-                        <div class="label-text">Số CCCD khách hàng</div>
+                        <div class="label-text">Số CCCD khách hàng<span class="text-danger"> *</span></div>
                         <input class="form-control" type="text" placeholder="Nhập số CCCD" name="cccdKhachHang" id="cccdKhachHang"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'');"
                                value="${cccdKhachHang}" autocomplete="off">
@@ -53,36 +38,24 @@
                 </div>
                 <div class="col-sm-6 col-xs-12">
                     <div class="form-group form-label-top">
-                        <div class="label-text">Trạng thái</div>
-                        <select class="form-control" name="movingStatus" value="${movingStatus}">
-                            <option value="0" selected>Tất cả</option>
-                            <option value="1">Đã trở về</option>
-                            <option value="2">Chưa trở về</option>
-                        </select>
+                        <div class="label-text">Ngày sinh khách hàng<span class="text-danger"> *</span></div>
+                        <div class='input-group date'>
+                            <input type='text' class="form-control text-mask-date"
+                                   placeholder="Chọn ngày sinh" id='ngaySinhKhachHang'
+                                   name="ngaySinhKhachHang" autocomplete="off" />
+                            <span class="input-group-addon" name="srchToBirthday" id="srchToBirthday">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6 col-xs-12">
+                <div class="col-sm-12 col-xs-12">
                     <div class="form-group form-label-top">
-                        <div class="label-text">Nguồn biến động:</div>
-                        <select class="form-control" name="sourceData" id="sourceData" value="${sourceData}">
-                            <option value="-1" selected>Tất cả</option>
-                            <option value="0">Trực tiếp</option>
-                            <option value="1">Tạm trú</option>
-                            <option value="4">Khai báo thông tin về nơi ở hiện tại</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xs-12">
-                    <div class="form-group form-label-top">
-                        <div class="label-text">Trạng thái tiếp nhận:</div>
-                        <select class="form-control" name="statusReceive" id="statusReceive"
-                                value="${statusReceive}"/>
-                        <option value="1">Biến động chờ tạo</option>
-                        <option value="2">Biến động không tạo</option>
-                        <option value="3" selected>Biến động đã tạo</option>
-                        </select>
+                        <div class="label-text">Địa chỉ</div>
+                        <input class="form-control" type="text" placeholder="Nhập địa chỉ khách hàng" name="diaChiKhachHang" id="diaChiKhachHang"
+                               value="${diaChiKhachHang}" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -91,16 +64,18 @@
                 <div class="box-body">
                     <div class="center">
                         <ul class="menu-list-item">
-                            <li class="item-menu not-show-on-editing">
-                                <a href="javascript:;" class="btn btn-second" onclick="refeshQuickSearch()">
-                                    <span class="icon nc-icon-outline arrows-1_refresh-68"></span>
-                                    Làm mới
+                            <li class="item-menu not-show-on-editing" id="btn_them_khach_hang">
+                                <a href="javascript:;" class="btn btn-main"
+                                   onclick="themMoiKhachHang('them')">
+                                    <span class="icon nc-icon-outline ui-1_bold-add"></span>
+                                    Thêm
                                 </a>
                             </li>
-                            <li class="item-menu not-show-on-editing">
-                                <a href="javascript:;" class="btn btn-second btn-adv">
-                                    <span class="icon nc-icon-outline ui-1_zoom"></span>
-                                    Tìm kiếm nâng cao
+                            <li class="item-menu not-show-on-editing" id="btn_cap_nhat_khach_hang">
+                                <a href="javascript:;" class="btn btn-main"
+                                   onclick="capNhatKhachHang('them')">
+                                    <span class="icon nc-icon-outline ui-1_edit-71"></span>
+                                    Cập nhật
                                 </a>
                             </li>
                             <li class="item-menu not-show-on-editing" id="btn_search_data">

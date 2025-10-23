@@ -2370,6 +2370,19 @@
     }
 
     $(function () {
+        $("#srchToBirthday").datepicker({autoclose: true, todayHighlight: true}).on('changeDate', function (e) {
+                $(document).pathValue({
+                    ngaySinhKhachHang: e.format(0, "dd/mm/yyyy")
+                });
+            }
+        );
+
+        $("#ngaySinhKhachHang").datepicker({autoclose: true, todayHighlight: true}).on('changeDate', function (e) {
+                $(document).pathValue({
+                    ngaySinhKhachHang: e.format(0, "dd/mm/yyyy")
+                });
+            }
+        );
         console.log('include file success!');
     })
 </script>
