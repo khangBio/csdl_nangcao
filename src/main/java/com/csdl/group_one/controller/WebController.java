@@ -15,6 +15,7 @@ public class WebController {
     @RequestMapping("/nhom-1")
     public String home(Model model) {
         model.addAttribute("message", "Hello JSP in Spring Boot!");
+        model.addAttribute("path", "csdl/hoadonbanhang-html.jsp");
         return "home"; //WEB-INF/views/home.jsp
     }
 

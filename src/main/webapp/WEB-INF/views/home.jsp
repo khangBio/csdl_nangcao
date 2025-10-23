@@ -69,7 +69,7 @@
 
 <body class="no-js" lang="vi" ng-app="myApp" aaa="<b>imdam</b>">
 <input id="PageContext" type="hidden" value="${pageContext.request.contextPath}" />
-<jsp:include page="./csdl/hoadonbanhang-html.jsp"/>
+<jsp:include page="./${path}"/>
 <div id="loading" style="display: none;">
     <%--		<i style="color: #ffffff;" class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>--%>
     <%--		<div class="loader"></div>--%>
