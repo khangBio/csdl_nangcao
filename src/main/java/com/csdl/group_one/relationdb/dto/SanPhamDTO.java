@@ -1,4 +1,4 @@
-package com.csdl.group_one.model;
+package com.csdl.group_one.relationdb.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
