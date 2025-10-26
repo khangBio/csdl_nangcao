@@ -1,8 +1,8 @@
-package com.csdl.group_one.danhmuc;
+package com.csdl.group_one.relationdb.restapi;
 
-import com.csdl.group_one.model.SanPhamDTO;
+import com.csdl.group_one.relationdb.service.DanhMucDAO;
+import com.csdl.group_one.relationdb.dto.SanPhamDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,15 +1,17 @@
-package com.csdl.group_one.danhmuc;
+package com.csdl.group_one.relationdb.service;
 
-import com.csdl.group_one.model.SanPhamDTO;
+import com.csdl.group_one.relationdb.service.DanhMucDAO;
+import com.csdl.group_one.relationdb.dto.SanPhamDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SanPhamDAOImpl implements DanhMucDAO{
+public class SanPhamDAOImpl implements DanhMucDAO {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
     public int addSanPham(SanPhamDTO sanPhamDTO) {

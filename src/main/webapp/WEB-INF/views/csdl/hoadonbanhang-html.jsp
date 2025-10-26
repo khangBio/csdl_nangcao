@@ -9,7 +9,32 @@
 <div class="box">
     <div class="box-body">
         <h1 class="main-title">THÔNG TIN KHÁCH HÀNG</h1>
-        <form id="form_quick_search" onsubmit="traCuuDanhSachHoBienDong('traCuuBienDong');return false;">
+        <form id="formThongTinKhachHang">
+            <div class="row" hidden="hidden">
+                <input type="number" id="idKhachHang"/>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group form-label-top">
+                        <div class="label-text">Số hóa đơn</div>
+                        <input class="form-control" type="text" name="soHoaDonKhachHang" id="soHoaDonKhachHang"
+                               value="" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group form-label-top">
+                        <div class="label-text">Ngày hóa đơn<span class="text-danger"> *</span></div>
+                        <div class='input-group date'>
+                            <input type='text' class="form-control text-mask-date"
+                                   placeholder="Nhập ngày hóa đơn" id='ngayHoaDon'
+                                   name="ngayHoaDon" autocomplete="off" />
+                            <span class="input-group-addon" name="btnNgayHoaDon" id="btnNgayHoaDon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-6 col-xs-12">
                     <div class="form-group form-label-top">
@@ -51,7 +76,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12 col-xs-12">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group form-label-top">
+                        <div class="label-text">Email</div>
+                        <input class="form-control" type="text" placeholder="Nhập email" name="emailKhachHang" id="emailKhachHang"
+                               value="${email}" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
                     <div class="form-group form-label-top">
                         <div class="label-text">Địa chỉ</div>
                         <input class="form-control" type="text" placeholder="Nhập địa chỉ khách hàng" name="diaChiKhachHang" id="diaChiKhachHang"
@@ -64,18 +96,11 @@
                 <div class="box-body">
                     <div class="center">
                         <ul class="menu-list-item">
-                            <li class="item-menu not-show-on-editing" id="btn_them_khach_hang">
-                                <a href="javascript:;" class="btn btn-main"
-                                   onclick="themMoiKhachHang('them')">
-                                    <span class="icon nc-icon-outline ui-1_bold-add"></span>
-                                    Thêm
-                                </a>
-                            </li>
                             <li class="item-menu not-show-on-editing" id="btn_cap_nhat_khach_hang">
                                 <a href="javascript:;" class="btn btn-main"
-                                   onclick="capNhatKhachHang('them')">
+                                   onclick="themMoiKhachHang('them')">
                                     <span class="icon nc-icon-outline ui-1_edit-71"></span>
-                                    Cập nhật
+                                    Ghi thông tin
                                 </a>
                             </li>
                             <li class="item-menu not-show-on-editing" id="btn_search_data">
@@ -85,11 +110,24 @@
                                     Tìm kiếm
                                 </a>
                             </li>
+                            <li class="item-menu not-show-on-editing" id="btn-tao-hoa-don">
+                                <a href="javascript:;" class="btn btn-main"
+                                   onclick="themMoiDonHang('them')">
+                                    <span class="icon nc-icon-outline ui-1_bold-add"></span>
+                                    Ghi hóa đơn
+                                </a>
+                            </li>
+                            <li class="item-menu not-show-on-editing" id="btn-huy-thong-tin">
+                                <a href="javascript:;" class="btn btn-danger"
+                                   onclick="huyThongTin('them')">
+                                    <span class="icon nc-icon-outline ui-1_circle-delete"></span>
+                                    Hủy
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="hidden">Enter submit</button>
         </form>
     </div>
 </div>
@@ -225,11 +263,11 @@
          change="nextPageDanhSachHoBienDong($event)"></div>
 </div>
 
-<div id="form_asHouseHold" class="modal fade dialog-full" role="dialog">
+<div id="form-add-thongtin-khachhang" class="modal fade dialog-full" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">THÊM MỚI BIẾN ĐỘNG HỘ KHÔNG CƯ TRÚ TẠI NƠI ĐĂNG KÝ THƯỜNG TRÚ</h5>
+                <h5 class="modal-title">THÊM MỚI THÔNG TIN KHÁCH HÀNG</h5>
                 <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button> -->
             </div>
             <div class="modal-body">
