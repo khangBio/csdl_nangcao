@@ -5,6 +5,7 @@ import com.csdl.group_one.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -14,33 +15,15 @@ public class DonHangServiceImpl implements DonHangService {
     private final DonHangRepository donHangRepository;
     private final ChiTietDonHangRepository chiTietRepository;
     private final DonHangMongoRepository donHangMongoRepository;
+    private final DonHangJsonRepository donHangJsonRepository;
 
     @Override
     public DonHang taoDonHang(DonHang donHang) {
-        // Lưu SQL
-        DonHang saved = donHangRepository.save(donHang);
+        return donHangRepository.save(donHang);
+    }
 
-        // Chuyển sang Mongo
-        DonHangMongo mongo = new DonHangMongo();
-        mongo.setMaDonHang(saved.getMaDonHang());
-        mongo.setNgayDat(saved.getNgayDat());
-        mongo.setTongTien(saved.getTongTien());
-        mongo.setTrangThai(saved.getTrangThai());
-        mongo.setKhachHang(saved.getKhachHang().getHoTen());
-
-        mongo.setChiTietDonHang(
-                chiTietRepository.findAll().stream()
-                        .filter(ct -> ct.getDonHang().getIdDonHang().equals(saved.getIdDonHang()))
-                        .map(ct -> {
-                            DonHangMongo.ChiTiet item = new DonHangMongo.ChiTiet();
-                            item.setTenSanPham(ct.getSanPham().getTenSanPham());
-                            item.setSoLuong(ct.getSoLuong());
-                            item.setDonGia(ct.getDonGia());
-                            return item;
-                        }).collect(Collectors.toList())
-        );
-
-        donHangMongoRepository.save(mongo);
-        return saved;
+    @Override
+    public void luuDonHangJson(Map<String, Object> donHangData) {
+        donHangJsonRepository.saveDonHangDocument(donHangData);
     }
 }

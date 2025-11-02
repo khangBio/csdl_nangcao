@@ -204,7 +204,7 @@
                 </div>
             </div>
             <div class="modal-footer center">
-                <button class="btn btn-second" name="btn-khongtaobiendong" id="btn-khongtaobiendong">Thanh toán</button>
+                <button class="btn btn-second" name="btn-khongtaobiendong" id="btn-khongtaobiendong" onclick="thanhToan()">Thanh toán</button>
                 <button class="btn btn-second" name="btn-close" id="btn-close">Đóng</button>
             </div>
         </div>

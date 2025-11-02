@@ -474,4 +474,91 @@
 
         }
     }
+
+    function thanhToan() {
+        //Lấy thông tin chính từ form và modal
+        const idDonHang = $("#id-don-hang").val() ? $("#id-don-hang").val() : 0;
+        const idKhachHang = $("#idKhachHang").val() ? $("#idKhachHang").val() : 0;
+
+        if (idDonHang <= 0) {
+            lib.showMessage('Không có thông tin đơn hàng để thanh toán!', 'error');
+            return;
+        }
+
+        // Lấy chi tiết đơn hàng
+        lib.getApi({
+            url: $("#PageContext").val() + '/get-chi-tiet-don-hang',
+            data: {
+                idDonHang: idDonHang,
+            },
+            beforePost: function () {
+                // Hiển thị loading
+                $("#form-danh-muc-san-pham").uiLoading(true);
+            },
+            complete: function (res) {
+                // Kiểm tra giỏ hàng có rỗng không
+                // 'res' chính là đối tượng JSON: { "idDonHang": 9, "chiTietDonHangs": [...] }
+                if (!res || !res.chiTietDonHangs || res.chiTietDonHangs.length === 0) {
+                    $("#form-danh-muc-san-pham").uiLoading(false);
+                    lib.showMessage('Giỏ hàng trống, không thể thanh toán!', 'error');
+                    return;
+                }
+
+                const maDonHang = res.maDonHang;
+                const ngayHoaDon = res.ngayHoaDon;
+                let chiTietDonHangs = res.chiTietDonHangs;
+                const tongTien = chiTietDonHangs.reduce((total, item) => {
+                    // item.soLuong và item.donGia
+                    return total + (parseInt(item.soLuong) * parseFloat(item.donGia));
+                }, 0);
+                const trangThai = "1";
+
+                // Gom toàn bộ dữ liệu đơn hàng
+                const donHangData = {
+                    idDonHang: idDonHang,
+                    idKhachHang: idKhachHang,
+                    maDonHang: maDonHang,
+                    ngayHoaDon: ngayHoaDon,
+                    tongTien: tongTien,
+                    trangThai: trangThai,
+                    chiTietDonHangs: chiTietDonHangs
+                };
+
+                console.log("Dữ liệu gửi lên /them-don-hang-json:", donHangData);
+
+                fetch($("#PageContext").val() + "/api/donhang/them-don-hang-json", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(donHangData)
+                })
+                    .then(response => {
+                        $("#form-danh-muc-san-pham").uiLoading(false);
+                        if (!response.ok) {
+                            throw new Error("Gọi API thất bại: " + response.statusText);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        // Hiển thị thông báo thành công từ controller
+                        lib.showMessage(data, 'success', function () {
+                            $("#form-danh-muc-san-pham").hideDialog();
+                            // Tải lại danh sách hóa đơn sau khi thanh toán thành công
+                            getListHoaDonOfKhachHang(idKhachHang, '-1');
+                        });
+                    })
+                    .catch(err => {
+                        $("#form-danh-muc-san-pham").uiLoading(false);
+                        console.error("Lỗi khi thanh toán: ", err);
+                        lib.showMessage("Không thể lưu đơn hàng: " + err.message, 'error');
+                    });
+
+            },
+            error: function (ex) {
+                $("#form-danh-muc-san-pham").uiLoading(false);
+                lib.showMessage('Lỗi khi lấy chi tiết giỏ hàng!', 'error');
+            }
+        });
+    }
 </script>
