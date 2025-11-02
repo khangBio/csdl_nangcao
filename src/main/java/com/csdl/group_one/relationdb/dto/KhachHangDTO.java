@@ -25,6 +25,8 @@ public class KhachHangDTO {
     private String diaChi;
     @JsonProperty("hinhAnhKhachHang")
     private String hinhAnhKhachHang;
+    @JsonProperty("donHangs")
+    List<DonHangDTO> donHangs;
 
     @JsonProperty("danhSachDonHang")
     private List<DonHangDTO> danhSachDonHang;
@@ -111,5 +113,13 @@ public class KhachHangDTO {
 
     public void setDanhSachDonHang(List<DonHangDTO> danhSachDonHang) {
         this.danhSachDonHang = danhSachDonHang;
+    }
+
+    public List<DonHangDTO> getDonHang() {
+        return donHangs;
+    }
+
+    public void setDonHang(List<DonHangDTO> donHangs) {
+        this.donHangs = donHangs;
     }
 }
