@@ -137,22 +137,6 @@
         <div class="pull-left">
             <div class="form-title">KẾT QUẢ TÌM KIẾM</div>
         </div>
-        <div class="pull-right group-buttons">
-            <button type="button" class="btn btn-second" onclick="formDialogCrud('them', null)" name="themBienDongHo"
-                    id="themBienDongHo">Thêm mới</button>
-            <button type="button" class="btn btn-second" onclick="functionActions('tiepnhan')" name="tiepNhanBienDongHo"
-                    id="tiepNhanBienDongHo">Tiếp nhận</button>
-            <button type="button" class="btn btn-second" onclick="functionActions('xem')" name="xemBienDongHo"
-                    id="xemBienDongHo">Xem</button>
-            <button type="button" class="btn btn-second" onclick="functionActions('sua')" name="suaBienDongHo"
-                    id="suaBienDongHo">Sửa</button>
-            <button type="button" class="btn btn-second" onclick="functionActions('xoa')" name="xoaBienDongHo"
-                    id="xoaBienDongHo">Xoá</button>
-            <button type="button" class="btn btn-second" onclick="functionActions('capnhatngayve')"
-                    name="btn-capnhatngayve" id="btn-capnhatngayve">Cập nhật về sớm</button>
-            <dct:btn-export functionName="ketXuatBienDong"/>
-
-        </div>
         <div class="clearfix"></div>
         <%--        <div class="note" id="noteSeach">--%>
         <%--            <span class="text-danger"> <c:if test="${(count > 0)}">Bạn có ${count} biến động chờ tạo cần tiếp nhận.</c:if></span>--%>
@@ -163,361 +147,65 @@
             <thead style="min-width: calc(100vw - 345px);">
             <tr>
                 <th class="stt text-center">
-                    <input type="checkbox" name="selectAll-danhSachHoBienDong" class="select-all-rows"
-                           childref="row-in-danhSachHoBienDong" />
+                    <input type="checkbox" name="selectAll-danhSachHoaDonKhachHang" class="select-all-rows"
+                           childref="row-in-danhSachHoaDonKhachHang" />
                 </th>
                 <th class="stt text-center">STT</th>
-                <th class="colf-ho-ten">Số hồ sơ<br>cư trú</th>
-                <th class="colf-ho-ten">Họ và tên chủ hộ</th>
+                <th class="colf-ho-ten">Số hóa đơn</th>
+                <th class="colf-date">Ngày hóa đơn</th>
+                <th class="colf-ho-ten">Họ tên khách hàng</th>
                 <th class="colf-date">Ngày sinh</th>
-                <th class="colf-cmnd text-center">Số<br>CMND/CCCD/ĐDCN</th>
-                <th class="colf-dia-chi">Địa chỉ thường trú</th>
-                <th class="colf-dia-chi">Nơi đến</th>
-                <th class="colf-date">Đi từ ngày</th>
-                <th class="colf-date">Đến ngày</th>
-                <th class="colf-source">Nguồn biến động</th>
-                <th class="colf-source">Trạng thái tiếp nhận</th>
+                <th class="colf-large text-center">Số<br>CMND/CCCD/ĐDCN</th>
+                <th class="colf-large text-center">Số điện thoại</th>
+                <th class="colf-xl-large">email</th>
+                <th class="colf-xl-large">Địa chỉ</th>
                 <th class="colf-status text-center">Trạng thái</th>
-                <th class="colf-action text-center">Thao tác</th>
+                <th class="colf-xxl-large text-center">Thao tác</th>
             </tr>
             </thead>
-            <tbody name="danhSachHoBienDong" id="danhSachHoBienDong" style="max-height: calc(100vh - 360px);">
-            <c:if test="${lstPojoAsDicHousHoldNotInGeographic_count > 0}">
-                <c:forEach var="idx" items="${lstPojoAsDicHousHoldNotInGeographic}" varStatus="vs">
-                    <tr class="tr-list">
-                        <td class="stt" ref="row-in-danhSachHoBienDong">
-                            <input type="checkbox" class="select-row checkAllMain" ref="row-in-danhSachHoBienDong"
-                                   houseHoldResId="${idx.houseHoldResId}"
-                                   houseHoldId="${idx.houseHoldId}"
-                                   receiveStatus="${idx.receiveStatus}"
-                                   sourceData="${idx.sourceData}"
-                                   movingStatus="${idx.movingStatus}"
-                                   hhRegBookProfNumber="${idx.hhRegBookProfNumber}"
-                                   houseHoldName="${idx.houseHoldName}" movingFromDate="${idx.movingFromDate}"
-                                   movingToDate="${idx.movingToDate}" compareToDate="${idx.compareToDate}" />
-                        </td>
-                        <td class="stt">${vs.count + (page - 1) * size}</td>
-                        <td class="colf-ho-ten">${idx.hhRegBookProfNumber}</td>
-                        <td class="colf-ho-ten">
-                            <a class="link second" href="javascript:;"
-                               onclick="formDialogCrud('xem','${idx.houseHoldId}', false, '', '${idx.receiveStatus}');">
-                                    ${idx.houseHoldName}
-                            </a>
-                        </td>
-                        <td class="colf-date">${idx.houseHoldBirthday}</td>
-                        <td class="colf-cmnd">${idx.identifyNumber}</td>
-                        <td class="colf-dia-chi">${idx.permanentAddress}</td>
-                        <td class="colf-dia-chi">${idx.movingAddress}</td>
-                        <td class="colf-date">${idx.movingFromDate}</td>
-                        <td class="colf-date">${idx.movingToDate}</td>
-                        <td class="colf-source">${idx.sourceDataName}</td>
-                        <td class="colf-source">${idx.statusReceiveName}</td>
-                        <td class="colf-status">
-                            <c:choose>
-                                <c:when test="${idx.movingStatus == 1}">
-                                    <span class="text-success">${idx.statusFullDesc}</span>
-                                </c:when>
-                                <c:when test="${idx.movingStatus == 2 && idx.compareToDate < 0 }">
-                                    <span class="text-success">${idx.statusFullDesc}</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="text-danger">${idx.statusFullDesc}</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td class="colf-action">
-                            <a href="javascript:;" data-tooltip="true" title="Xem" class="not-click"
-                               onclick="quickActions('xem','${idx.houseHoldId}','${idx.hhRegBookProfNumber}',null, '${idx.receiveStatus}');">
-                                <span class="nc-icon-outline ui-1_eye-17 not-click"></span>
-                            </a>
-                            <a href="javascript:;" ng-if="${idx.receiveStatus == 3}" data-tooltip="true" title="Cập nhật về sớm" class="not-click"
-                               onclick="quickActions('capnhatngayve','${idx.houseHoldId}','${idx.movingStatus}','${idx.movingToDate}', '${idx.receiveStatus}');">
-                                <span class="nc-icon-outline users-2_a-time not-click"></span>
-                            </a>
-                            <a href="javascript:;" ng-if="${idx.receiveStatus == 3}" data-tooltip="true" title="Sửa" class="not-click"
-                               onclick="quickActions('sua','${idx.houseHoldId}','${idx.hhRegBookProfNumber}', null, '${idx.receiveStatus}');">
-                                <span class="nc-icon-outline ui-1_edit-76 not-click"></span>
-                            </a>
-                            <a href="javascript:;" ng-if="${idx.receiveStatus == 3}" data-tooltip="true" title="Xóa" class="not-click"
-                               onclick="quickActions('xoa','${idx.houseHoldId}', '${idx.houseHoldName}');">
-                                <span class="nc-icon-outline ui-1_trash-simple not-click"></span>
-                            </a>
-                            <a href="javascript:;" ng-if="${idx.receiveStatus != 3}" data-tooltip="true" title="Tiếp nhận" class="not-click"
-                               onclick="quickActions('tiepnhan','${idx.houseHoldId}', '${idx.hhRegBookProfNumber}', null, '${idx.receiveStatus}');">
-                                <span class="nc-icon-outline ui-1_circle-add not-click"></span>
-                            </a>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </c:if>
-            <c:if test="${lstPojoAsDicHousHoldNotInGeographic_count == 0}">
-                <tr citizenCode = "" class="row-select">
-                    <td class="fit text-center" colspan="15">Không có dữ liệu</td>
-                </tr>
-            </c:if>
+            <tbody name="danhSachHoaDonKhachHang" id="danhSachHoaDonKhachHang" style="max-height: calc(100vh - 360px);">
             </tbody>
         </table>
     </div>
-    <div class="vnpt-paging" id="lstPojoAsDicHousHoldNotInGeographic-paging"
-         data-count="${lstPojoAsDicHousHoldNotInGeographic_count}" data-page="${page}" data-size="${size}"
-         change="nextPageDanhSachHoBienDong($event)"></div>
 </div>
 
-<div id="form-add-thongtin-khachhang" class="modal fade dialog-full" role="dialog">
+<div id="form-danh-muc-san-pham" class="modal fade dialog-full" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+            <input type="number" id="id-don-hang" value="0" hidden="hidden"/>
             <div class="modal-header">
-                <h5 class="modal-title">THÊM MỚI THÔNG TIN KHÁCH HÀNG</h5>
-                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button> -->
+                <h5 class="modal-title">DANH MỤC SẢN PHẨM</h5>
+            </div>
+            <div class="modal-body" id="modal-danh-muc-san-pham">
             </div>
             <div class="modal-body">
-                <div class="form-row">
-                    <div class="pull-left" id="dongCapNhatVeSom" hidden>
-                        <!-- <a href="javascript:;" onclick="functionActions('dong')"><i
-                                class="fa fa-arrow-left fa-3x"></i></a> -->
-                    </div>
-                    <div class="pull-right">
-                        <button class="btn btn-line" name="btn-ketThucBienDong" id="btn-ketThucBienDong">Cập nhật về sớm
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-title">Thông tin hộ:</div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="input-right-button">
-                            <div class="form-group form-label-top">
-                                <div class="label-text">Số hồ sơ cư trú<span class="text-danger"> *</span></div>
-                                <input type="text" class="form-control" placeholder="Nhập số hồ sơ cư trú"
-                                       name="hhRegBookProfNumber" id="hhRegBookProfNumber" autocomplete="off">
-                                </input>
-                            </div>
-                            <div class="actions">
-                                <button type="button" class="btn btn-main" name="dialogSeachHouseHold"
-                                        id="dialogSeachHouseHold" onclick="traCuuHoCuTruTaiDiaBan('open')">
-                                    <span class="nc-icon-outline ui-2_menu-dots"></span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Họ và tên chủ hộ<span class="text-danger"> *</span></div>
-                            <input name="hoTenChuHo" id="hoTenChuHo" type="text" class="form-control"
-                                   placeholder="Nhập tên chủ hộ" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Ngày sinh chủ hộ<span class="text-danger"> *</span></div>
-                            <div class='input-group date' id='datetimepickerNgaySinhChuHo'>
-                                <input type='text' id='ngaySinhChuHo' name="ngaySinhChuHo" placeholder="Chọn ngày sinh"
-                                       class="form-control text-mask-date" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Số CMND/CCCD/ĐDCN chủ hộ</div>
-                            <input name="soCMNDChuHo" id="soCMNDChuHo" type="text" class="form-control"
-                                   oninput="this.value=this.value.replace(/[^0-9]/g,'');"
-                                   placeholder="Nhập số CMND/CCCD/ĐDCN chủ hộ" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Địa chỉ thường trú<span class="text-danger"> *</span></div>
-                            <input name="diaChiThuongTru" id="diaChiThuongTru" type="text" class="form-control"
-                                   placeholder="Nhập địa chỉ thường trú" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12" name="tamvang" id="tamvang">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12" name="tamtru" id="tamtru">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-title">Thông tin nhân khẩu:</div>
+                <div class="form-row" style="padding-top: 25px">
+                    <div class="form-title"><span class="icon nc-icon-outline shopping_cart"></span> Giỏ hàng của bạn</div>
                     <div class="table-content">
                         <table class="table table-striped table-bordered">
-                            <thead>
+                            <thead style="min-width: calc(100vw - 345px);">
                             <tr>
-                                <th class="stt">STT</th>
-                                <th class="fit col-ho-ten">Họ và tên</th>
-                                <th>Ngày sinh</th>
-                                <th class="fit text-center">Giới tính</th>
-                                <th class="fit">Số CMND/CCCD/ĐDCN</th>
-                                <th class="fit">Chủ hộ/Quan hệ với chủ hộ</th>
-                                <th class="fit text-center">Ngày chết(Nếu có)</th>
+                                <th class="stt text-center">STT</th>
+                                <th class="colf-xl-large">Tên sản phẩm</th>
+                                <th class="colf-status-center">Đơn vị tính</th>
+                                <th class="colf-status-center">Số lượng</th>
+                                <th class="colf-status-center">Đơn giá</th>
+                                <th class="colf-status-center">Thuế GTGT</th>
+                                <th class="colf-status-center">Thành tiền</th>
+                                <th class="colf-xl-large text-center">Thao tác</th>
                             </tr>
                             </thead>
-                            <tbody name="thongTinNhanKhau" id="thongTinNhanKhau">
+                            <tbody name="chiTietDonHang" id="chiTietDonHang">
                             </tbody>
                         </table>
                         <%--                        <div class="vnpt-paging" filter-size="false" id="thongTinNhanKhau-paging"--%>
                         <%--                            change="dataNextPage($event)"></div>--%>
                     </div>
                 </div>
-
-                <div class="form-title">Nơi đến:</div>
-                <div class="row">
-                    <div class="col-sm-12 list-control">
-                        <div class="form-group">
-                            <div class="check-action">
-                                <input type="radio" name="destionalType" id="destionalType1" value="1" /> <span
-                                    class="name">Trong nước</span>
-                            </div>
-                            <div class="check-action">
-                                <input type="radio" name="destionalType" id="destionalType2" value="2" /> <span
-                                    class="name">Nước ngoài</span>
-                            </div>
-                            <div class="check-action">
-                                <input type="radio" name="destionalType" id="destionalType3" value="3" /> <span
-                                    class="name">Không rõ nơi cư trú</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4" id="divMovingType" style="display: none">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Loại di chuyển<span class="text-danger"> *</span></div>
-                            <select class="form-control" placeholder="Chọn loại di chuyển" id="placeToMovingType"
-                                    name="placeToMovingType">
-                                <option value="1">Đi ngoài tỉnh</option>
-                                <option value="2">Đi ngoài huyện trong tỉnh</option>
-                                <option value="3">Đi ngoài xã trong huyện</option>
-                                <option value="4">Đi trong xã</option>
-                            </select>
-                        </div>
-
-                    </div>
-                    <div class="col-md-4" id="divMovingCountryId" style="display: none">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Quốc gia<span class="text-danger"> *</span></div>
-                            <select class="form-control" type="select" placeholder="Chọn quốc gia"
-                                    data-url="${pageContext.request.contextPath}/public/category/asdiccountrycombobox?notCounTryResId=VN"
-                                    name="movingCountryId" id="movingCountryId" value="${movingCountryId}">
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" id="divMovingInCountry" style="display: none">
-                    <div class="col-md-4">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Tình / thành<span class="text-danger"> *</span></div>
-                            <select class="form-control" placeholder="Chọn tỉnh thành / phố" type="select"
-                                    data-url="${pageContext.request.contextPath}/public/category/citycombobox"
-                                    data-param='{"showAll":true}' id="movingCityId" name="movingCityId"  allowClear="true"
-                                    sort="true"
-                            >
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Quận / huyện</div>
-                            <select class="form-control" placeholder="Chọn quận / huyện" type="select"
-                                    data-url="${pageContext.request.contextPath}/public/category/districtcombobox"
-                                    data-param='{"showAll":true}' id="movingDistrictId" name="movingDistrictId"
-                                    disabled="disabled" allowClear="true" sort="true">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Phường / xã</div>
-                            <select class="form-control" placeholder="Chọn phường / xã" type="select"
-                                    data-url="${pageContext.request.contextPath}/public/category/villagecombobox"
-                                    data-param='{"showAll":true}' id="movingVillageId" name="movingVillageId"
-                                    disabled="disabled" allowClear="true" sort="true">
-                            </select>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="row" name="divMovingAddress" id="divMovingAddress">
-                    <div class="col-md-12">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Địa chỉ cụ thể</div>
-                            <input type="text" class="form-control" placeholder="Nhập địa chỉ" id="movingAddress"
-                                   name="movingAddress">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Lý do</div>
-                            <textarea class="form-control" placeholder="Nhập lý do" id="reason"
-                                      name="reason"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Từ ngày<span class="text-danger"> *</span>:</div>
-                            <div class='input-group date' id='datetimepickerFromDate'>
-                                <input type='date' id='movingFromDate' name="movingFromDate" placeholder="Chọn ngày đi"
-                                       class="form-control" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Đến ngày:</div>
-                            <div class='input-group date' id="datetimepickerToDate">
-                                <input type='date' id='movingToDate' name="movingToDate" placeholder="Chọn đến ngày"
-                                       class="form-control" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Trạng thái<span class="text-danger"> *</span></div>
-                            <select class="form-control" placeholder="Chọn trạng thái di chuyển" id="movingStatus" name="movingStatus">
-                                <option value="1" selected>Đã trở về</option>
-                                <option value="2">Chưa trở về</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" name="reasonNotCreate" id="reasonNotCreate" hidden="hidden">
-                    <div class="col-md-12">
-                        <div class="form-group form-label-top">
-                            <div class="label-text">Lý do không tạo biến động<span class="text-danger"> *</span></div>
-                            <textarea class="form-control" placeholder="Nhập lý do khi không tạo biến động" id="resonNotCreateHouseHold"
-                                      name="resonNotCreateHouseHold"></textarea>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="modal-footer center">
-                <button class="btn btn-second" name="btn-close">Quay lại</button>
-                <button class="btn btn-second" name="btn-ghivathem" id="btn-ghivathem">Ghi và thêm mới</button>
-                <button class="btn btn-primary" name="btn-ghi" id="btn-ghi">Ghi</button>
-                <button class="btn btn-second" name="btn-khongtaobiendong" id="btn-khongtaobiendong">Không tạo biến động</button>
-                <button class="btn btn-primary" name="btn-taobiendong" id="btn-taobiendong">Tạo biến động</button>
+                <button class="btn btn-second" name="btn-khongtaobiendong" id="btn-khongtaobiendong">Thanh toán</button>
+                <button class="btn btn-second" name="btn-close" id="btn-close">Đóng</button>
             </div>
         </div>
     </div>

@@ -1,7 +1,9 @@
 package com.csdl.group_one.relationdb.service;
 
+import com.csdl.group_one.relationdb.dto.ChiTietDonHangDTO;
 import com.csdl.group_one.relationdb.dto.DonHangDTO;
 import com.csdl.group_one.relationdb.dto.KhachHangDTO;
+import com.csdl.group_one.relationdb.dto.SanPhamDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,9 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class KhachHangServiceImpl implements KhachHangService{
@@ -36,7 +40,7 @@ public class KhachHangServiceImpl implements KhachHangService{
         try {
             int result = namedParameterJdbcTemplate.update(sql, parameterSource);
             if (result > 0){
-               KhachHangDTO khachHang = findOneKhachHang(khachHangDTO.getSoDienThoai(), khachHangDTO.getCccd(), "");
+               KhachHangDTO khachHang = findOneKhachHang(khachHangDTO);
                return khachHang.getIdKhachHang();
             }
             return -1;
@@ -71,8 +75,7 @@ public class KhachHangServiceImpl implements KhachHangService{
     }
 
     @Override
-    public KhachHangDTO findOneKhachHang(String soDienThoai, String cccd, String ngaySinh) {
-        KhachHangDTO khachHangDTO = new KhachHangDTO();
+    public KhachHangDTO findOneKhachHang(KhachHangDTO khachHangDTO) {
         String sql = " SELECT TOP(1) idKhachHang        \n" +
                 "      ,maKhachHang                     \n" +
                 "      ,hoTen                           \n" +
@@ -85,30 +88,37 @@ public class KhachHangServiceImpl implements KhachHangService{
                 "  FROM dbo.KhachHang                   \n" +
                 "  where 1 = 1                          \n";
         String sqlWhere = "";
-        if (!soDienThoai.equals("")){
+        if (khachHangDTO.getIdKhachHang() != null && khachHangDTO.getIdKhachHang() > 0){
+            sqlWhere = sqlWhere + " and idKhachHang = :idKhachHang";
+        }
+
+        if (khachHangDTO.getSoDienThoai() != null && !khachHangDTO.getSoDienThoai().equals("")){
             sqlWhere = sqlWhere + " and soDienThoai = :soDienThoai";
         }
-        if (!cccd.equals("")){
+        if (khachHangDTO.getCccd() != null && !khachHangDTO.getCccd().equals("")){
             sqlWhere = sqlWhere + " and cccd = :cccd";
         }
 
-        if (!ngaySinh.equals("")){
+        if (khachHangDTO.getNgaySinh() != null && !khachHangDTO.getNgaySinh().equals("")){
             sqlWhere = sqlWhere + " and ngaySinh = :ngaySinh";
         }
         sql = sql + sqlWhere;
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("cccd", cccd);
-        parameterSource.addValue("ngaySinh", ngaySinh);
-        parameterSource.addValue("soDienThoai", soDienThoai);
+        parameterSource.addValue("idKhachHang", khachHangDTO.getIdKhachHang());
+        parameterSource.addValue("cccd", khachHangDTO.getCccd());
+        parameterSource.addValue("ngaySinh", khachHangDTO.getNgaySinh());
+        parameterSource.addValue("soDienThoai", khachHangDTO.getSoDienThoai());
+
         try {
             Map mapResult =  namedParameterJdbcTemplate.queryForMap(sql, parameterSource);
+            KhachHangDTO khachHang = new KhachHangDTO();
             if (!mapResult.isEmpty()) {
                 ObjectMapper mapper = new ObjectMapper();
-                khachHangDTO = mapper.readValue(mapper.writeValueAsString(mapResult), KhachHangDTO.class);
+                khachHang = mapper.readValue(mapper.writeValueAsString(mapResult), KhachHangDTO.class);
             }
-            return khachHangDTO;
+            return khachHang;
         }catch (Exception e){
-            return khachHangDTO;
+            return new KhachHangDTO();
         }
     }
 
@@ -147,6 +157,126 @@ public class KhachHangServiceImpl implements KhachHangService{
             return namedParameterJdbcTemplate.update(sql, parameterSource);
         }catch (Exception e){
             return -1;
+        }
+    }
+
+    @Override
+    public List<DonHangDTO> findDonHangByIdKhachHang(KhachHangDTO khachHangDTO, String soHoaDon) {
+        String sql = "SELECT TOP (100) idDonHang    \n" +
+                "      ,maDonHang       \n" +
+                "      ,ngayHoaDon      \n" +
+                "      ,tongTien        \n" +
+                "      ,trangThai       \n" +
+                "      ,idKhachHang     \n" +
+                "  FROM dbo.DonHang hd  \n" +
+                "  WHERE 1 = 1 ";
+
+        String sqlWhere = "";
+        if (khachHangDTO.getIdKhachHang() != null || khachHangDTO.getIdKhachHang() > 0){
+            sqlWhere = sqlWhere + " and idKhachHang = :idKhachHang";
+        }
+        if (!soHoaDon.equals("") && !soHoaDon.equals("-1")){
+            sqlWhere = sqlWhere + " and maDonHang = :maDonHang";
+        }
+        sql = sql + sqlWhere;
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("idKhachHang", khachHangDTO.getIdKhachHang());
+        parameterSource.addValue("maDonHang", soHoaDon);
+        try {
+            List donHangList =  namedParameterJdbcTemplate.queryForList(sql, parameterSource);
+            ObjectMapper objectMapper = new ObjectMapper();
+            return (List<DonHangDTO>) donHangList.stream().map(item -> {
+                try {
+                    return objectMapper.readValue(objectMapper.writeValueAsString(item), DonHangDTO.class);
+                } catch (Exception e) {
+                    return new ArrayList<DonHangDTO>();
+                }
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            return new ArrayList<DonHangDTO>();
+        }
+    }
+
+    @Override
+    public DonHangDTO findOneDonHang(int idDonHang) {
+        String sql = "SELECT TOP (1) idDonHang      \n" +
+                "      ,maDonHang       \n" +
+                "      ,ngayHoaDon      \n" +
+                "      ,tongTien        \n" +
+                "      ,trangThai       \n" +
+                "      ,idKhachHang     \n" +
+                "  FROM dbo.DonHang     \n" +
+                "  WHERE idDonHang =:idDonHang";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("idDonHang", idDonHang);
+        try {
+            Map mapResult =  namedParameterJdbcTemplate.queryForMap(sql, parameterSource);
+            DonHangDTO  donHangDTO = new DonHangDTO();
+            if (!mapResult.isEmpty()) {
+                ObjectMapper mapper = new ObjectMapper();
+                donHangDTO = mapper.readValue(mapper.writeValueAsString(mapResult), DonHangDTO.class);
+            }
+            return donHangDTO;
+        }catch (Exception e){
+            return new DonHangDTO();
+        }
+    }
+
+    @Override
+    public int addChiTietDonHang(ChiTietDonHangDTO chiTietDon) {
+        String sql = "INSERT INTO dbo.ChiTietDonHang (idDonHang, idSanPham, soLuong, donGia, trangThai)\n" +
+                "VALUES (:idDonHang, :idSanPham, :soLuong, :donGia, :trangThai)";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("idDonHang", chiTietDon.getIdDonHang());
+        parameterSource.addValue("idSanPham", chiTietDon.getIdSanPham());
+        parameterSource.addValue("soLuong", chiTietDon.getSoLuong());
+        parameterSource.addValue("donGia", chiTietDon.getDonGia());
+        parameterSource.addValue("trangThai", chiTietDon.getTrangThai());
+        try {
+            return namedParameterJdbcTemplate.update(sql, parameterSource);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
+    public int deleteChiTietDonHang(int idChiTietDonHang) {
+        String sql = "DELETE FROM dbo.ChiTietDonHang\n" +
+                "WHERE idChiTiet = :idChiTiet";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("idChiTiet", idChiTietDonHang);
+        try {
+            return namedParameterJdbcTemplate.update(sql, parameterSource);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
+    public List<ChiTietDonHangDTO> chiTietDonHang(int idDonHang) {
+        String sql = "SELECT TOP (100) idChiTiet\n" +
+                "      ,soLuong\n" +
+                "      ,donGia\n" +
+                "      ,idDonHang\n" +
+                "      ,idSanPham\n" +
+                "      ,trangThai\n" +
+                "      ,createDate\n" +
+                "  FROM dbo.ChiTietDonHang" +
+                " WHERE idDonHang = :idDonHang";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("idDonHang", idDonHang);
+        try {
+            List donHangList =  namedParameterJdbcTemplate.queryForList(sql, parameterSource);
+            ObjectMapper objectMapper = new ObjectMapper();
+            return (List<ChiTietDonHangDTO>) donHangList.stream().map(item -> {
+                try {
+                    return objectMapper.readValue(objectMapper.writeValueAsString(item), ChiTietDonHangDTO.class);
+                } catch (Exception e) {
+                    return new ArrayList<ChiTietDonHangDTO>();
+                }
+            }).collect(Collectors.toList());
+        }catch (Exception e){
+            return new ArrayList<ChiTietDonHangDTO>();
         }
     }
 }

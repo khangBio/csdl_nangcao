@@ -40,6 +40,9 @@
 <%--<script src="/notification/resources/notify.js?v=2"></script>--%>
 <script type="text/javascript">
     var formThongTinKhachHang = $("#formThongTinKhachHang");
+    const MIN = 0;
+    const MAX = 10;
+    const TITLE_MODAL_DANH_MUC_SAN_PHAM = '<div class="form-title">Danh mục sản phẩm</div>';
     $(function () {
         $("#btn-tao-hoa-don").hide();
         $("#formThongTinKhachHang").disableControlValue({
@@ -71,6 +74,10 @@
             }
         );
 
+        $("#btn-close").click(function (){
+            $("#form-danh-muc-san-pham").hideDialog();
+        })
+
         $("#sdtKhachHang").keydown(function (e) {
             if (e.keyCode == 13){
                 $("#formThongTinKhachHang").resetValidation();
@@ -89,6 +96,52 @@
             }
         })
     });
+
+    function eventChooseProd(evt){
+        const parentCard = $(evt).closest('.col-md-3');
+        const prodId = parentCard.attr('prod-id');
+        const prodDonGia = parentCard.attr('prod-don-gia');
+        const quantityInput  = parentCard.find('input[name=quantity]');
+        let soLuong = quantityInput ? quantityInput.val() : 0
+        let idDonHang = $("#id-don-hang").val() ? $("#id-don-hang").val() : 0;
+        if (idDonHang <= 0) {
+            lib.showMessage('error', 'error', function () {
+                //
+            });
+            return;
+        }
+        lib.post({
+            url: $("#PageContext").val() + "/do-chi-tiet-don-hang",
+            data: JSON.stringify({
+                idDonHang: idDonHang,
+                idChiTiet: 0,
+                soLuong: soLuong,
+                donGia: prodDonGia,
+                idSanPham: prodId,
+                trangThai: 0,
+            }),
+            beforePost:function(){
+                $("#form-danh-muc-san-pham").uiLoading(true);
+            },
+            complete: function (response) {
+                $("#form-danh-muc-san-pham").uiLoading(false);
+                var res = response.responseJSON;
+                if (res.errorCode < 0){
+                    lib.showMessage('' + res.errorMessage, 'error', function () {
+                        //
+                    });
+                }else {
+                    lib.showMessage('' + res.errorMessage, 'success', function () {
+                        let idDonHang = $("#id-don-hang").val();
+                        getChiTietDonHang(idDonHang);
+                    });
+                }
+            },
+            error: function (ex) {
+                $("#form-danh-muc-san-pham").uiLoading(false);
+            }
+        });
+    }
 
     function themMoiKhachHang(action){
         $("#formThongTinKhachHang").resetValidation();
@@ -171,6 +224,7 @@
                         diaChiKhachHang: item.diaChi,
                     });
                     $("#btn-tao-hoa-don").show();
+                    getListHoaDonOfKhachHang(item.idKhachHang, '-1');
                 }else {
                     lib.showMessage('Không tìm thấy thông tin khách hàng!',
                         'error', function () {
@@ -242,123 +296,71 @@
         });
     }
 
-    function openDialogKhachHang(){
-        $("#form-add-thongtin-khachhang").shownDialog(
+    function openDialogSanPham(action, idHoaDon){
+        $("#form-danh-muc-san-pham").shownDialog(
             {
                 title: {
-                    add: 'THÊM MỚI THÔNG TIN KHÁCH HÀNG',
+                    add: 'DANH MỤC SẢN PHẨM',
                     edit: 'SỬA BIẾN ĐỘNG HỘ KHÔNG CƯ TRÚ TẠI NƠI ĐĂNG KÝ THƯỜNG TRÚ',
                 },
                 action: action,
                 onShown: function () {
-                    $(formId).removeClass('mode-view');
-                    $(formId).resetValidation();
-                    jsonFormId = JSON.stringify($(formId).getValue());
-                    if (action === 'xem') {
-                        // $(formId).uiLoading();
-                        actionDialog = action;
-                        $("button[name='dialogSeachHouseHold']").prop("disabled", true);
-                        $("button[name='btn-ghivathem']").hide();
-                        $('button[name="btn-ghi"]').hide();
-                        $("#btn-ketThucBienDong").hide();
-                        $("#dongCapNhatVeSom").show();
-                        $("#btn-khongtaobiendong").hide();
-                        $("#btn-taobiendong").hide();
-                        if (receiveStatus == KEY_DA_TAO_BIEN_DONG){
-                            $("#reasonNotCreate").hide();
-                        }else {
-                            $("#reasonNotCreate").show();
-                        }
-                        $(formId).addClass('mode-view');
-                        $('button[name="btn-close"]').show();
-                        $(formId).disableAllControl(true);
-                    } else if (action === 'capnhatngayve') {
-                        if (lib.parsetoDate(itemName.movingToDate, "/") >= lib.parsetoDate(ngayHienTai, "/") || itemName.movingToDate.trim() == "") {
-                            $("#btn-ketThucBienDong").show();
-                        } else {
-                            $("#btn-ketThucBienDong").hide();
-                        }
-                        $("button[name='dialogSeachHouseHold']").prop("disabled", true);
-                        $("button[name='btn-ghivathem']").hide();
-                        $('button[name="btn-ghi"]').hide();
-                        $('button[name="btn-close"]').show();
-                        $("#btn-khongtaobiendong").hide();
-                        $("#btn-taobiendong").hide();
-                        $(formId).addClass('mode-view');
-                        $("#dongCapNhatVeSom").show();
-                        $(formId).disableAllControl(true);
-                    } else if (action === 'sua') {
-                        $("#btn-ketThucBienDong").hide();
-                        $("button[name='btn-ghivathem']").hide();
-                        $("#dongCapNhatVeSom").hide();
-                        $("button[name='btn-ghi']").show();
-                        $('button[name="btn-close"]').show();
-                        $("#btn-khongtaobiendong").hide();
-                        $("#btn-taobiendong").hide();
-                        $("#reasonNotCreate").hide();
-                        $("button[name='dialogSeachHouseHold']").prop("disabled", true);
-                        $(formId).disableAllControl(false);
-                        $(formId).disableControlValue({
-                            hhRegBookProfNumber: true,
-                            dialogSeachHouseHold: true,
-                            soSoHoKhau: true,
-                            soHoSoCuTru: true,
-                            hoTenChuHo: true,
-                            soCMNDChuHo: true,
-                            ngaySinhChuHo: true,
-                            diaChiThuongTru: true
-                        });
-                    }else if (action === 'tiepnhan'){
-                        $("#btn-ketThucBienDong").hide();
-                        $("button[name='btn-ghivathem']").hide();
-                        $("#dongCapNhatVeSom").hide();
-                        $("button[name='btn-ghi']").hide();
-                        $('button[name="btn-close"]').show();
-                        $("#btn-khongtaobiendong").show();
-                        $("#btn-taobiendong").show();
-                        $("#reasonNotCreate").show();
-                        $("button[name='dialogSeachHouseHold']").prop("disabled", true);
-                        $(formId).disableAllControl(false);
-                        $(formId).disableControlValue({
-                            hhRegBookProfNumber: true,
-                            dialogSeachHouseHold: true,
-                            soSoHoKhau: true,
-                            soHoSoCuTru: true,
-                            hoTenChuHo: true,
-                            soCMNDChuHo: true,
-                            ngaySinhChuHo: true,
-                            diaChiThuongTru: true
-                        });
-                    }else {//thêm
-                        $("button[name='dialogSeachHouseHold']").prop("disabled", false);
-                        $("#hhRegBookProfNumber").focus();
-                        $("#btn-ketThucBienDong").hide();
-                        $("button[name='btn-ghivathem']").show();
-                        $("button[name='btn-ghi']").show();
-                        $('button[name="btn-close"]').show();
-                        $("#dongCapNhatVeSom").hide();
-                        $("#btn-khongtaobiendong").hide();
-                        $("#btn-taobiendong").hide();
-                        $("#reasonNotCreate").hide();
-                        $(formId).disableAllControl(true);
-                        $(formId).disableAllControl(false);
-                        $(formId).disableControlValue({
-                            soSoHoKhau: true,
-                            soHoSoCuTru: true,
-                            hoTenChuHo: true,
-                            soCMNDChuHo: true,
-                            ngaySinhChuHo: true,
-                            diaChiThuongTru: true,
-                            movingDistrictId: true,
-                            movingVillageId: true
-                        });
-                        $("#divMovingCountryId").hide();
-                        $("#divMovingType").show();
-                        $("#divMovingInCountry").show();
-                        $("#divMovingAddress").show();
-                    }
+                    lib.getApi({
+                        url: $("#PageContext").val() + '/get-danh-muc-san-pham',
+                        data: {
+                            rownum: 100
+                        },
+                        complete: function (response) {
+                            $("#id-don-hang").val(idHoaDon);
+                            renderDanhMucSanPham(response);
+                            getChiTietDonHang(idHoaDon);
+                        },
+                        error: function (ex) {}
+                    });
                 }
             });
+
+        function renderDanhMucSanPham(data){
+            const size = data.length;
+            if (data){
+                $("#modal-danh-muc-san-pham").empty();
+                const maxCol = 4;
+                var divRow = '';
+                var divCol = '';
+                let numCol = 0;
+                for (let [index, item] of data.entries()){
+                    numCol += 1;
+                    divCol = divCol +
+                          '<div class="col-md-3" prod-id="'+ item.idSanPham + '" prod-code="' + item.maSanPham + '" prod-don-gia="' + item.donGia + '">'
+                        + '    <div class="card">'
+                        + '        <div class="card-image">'
+                        + '            <input class="card-image-input" type="image" src="data:image/png;base64,' + item.hinhAnhSanPham + '">'
+                        + '        </div>'
+                        + '        <div class="card-content">'
+                        + '            <h4 class="card-title">'+ item.tenSanPham +'</h4>'
+                        + '            <p class="card-description">' + (item.donGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) + '</p>'
+                        + '            <div class="card-footer">'
+                        + '                <button class="card-button btn-primary add-shopping-cart" onclick="eventChooseProd(this)">Chọn</button>'
+                        + '                <div class="quantity-wrapper">'
+                        + '                     <label class="quantity-label">Số lượng</label>'
+                        + '                     <input type="number"class="quantity-input" name="quantity" id="quantity" value="1" min="1"'
+                        + '                             onkeypress="return event.charCode >= 48 && event.charCode <= 57"'
+                        + '                             oninput="validateQuantity(this)"></div>'
+                        + '            </div>'
+                        + '        </div>'
+                        + '    </div>'
+                        + '</div>';
+                    if (numCol == maxCol || (index + 1) == size){ /*đủ cột hoặc index cuối cùng*/
+                        divRow = divRow + '<div class="row center" style="padding-top: 15px">' + divCol + '</div>'
+                        numCol = 0;
+                        divCol = '';
+                    }
+                }
+            }
+            $("#modal-danh-muc-san-pham")
+                .append('<div class="form-title">Danh mục sản phẩm</div>')
+                .append(divRow);
+        }
     }
 
     function huyThongTin(){
@@ -375,5 +377,103 @@
         )
         $("#idKhachHang").val(0);
         $("#btn-tao-hoa-don").hide();
+    }
+
+    function getListHoaDonOfKhachHang(idKhacHang = 0, soHoaDon = '-1') {
+        lib.getApi({
+            url: $("#PageContext").val() + '/get-list-don-hang',
+            data: {
+                idKhachHang: idKhacHang,
+                soHoaDon: soHoaDon
+            },
+            complete: function (response) {
+                debugger;
+                console.log(response);
+                renderDanhSachHoaDon(response);
+            },
+            error: function (ex) {}
+        });
+
+        function renderDanhSachHoaDon(data){
+            if (data){
+                let khachHang = data;
+                let hoaDons = data.danhSachDonHang;
+                $.each(hoaDons, function (i) {
+                    let stt = i + 1;
+                    let statusDesc = hoaDons[i].trangThai == 1 ? 'Đã thanh toán' : (hoaDons[i].trangThai == 2 ? 'Đã hủy' : 'Chưa thanh toán');
+                    $('<tr class="tr-list">' +
+                        '<td class="stt text-center">' +
+                        '<input type="checkbox" name="row-hoadon" class="radio" ' +
+                        'idHoadon = "'                          + hoaDons[i].idDonHang  +
+                        '"soHoaDon ="'                          + hoaDons[i].maDonHang  +'"/></td>' +
+                        '<td class="stt text-center">'          + stt                   + '</td>' +
+                        '<td class="colf-ho-ten">'              + hoaDons[i].maDonHang     + '</td>' +
+                        '<td class="colf-date">'                + hoaDons[i].ngayHoaDon    + '</td>' +
+                        '<td class="colf-ho-ten">'              + khachHang.hoTen       + '</td>' +
+                        '<td class="colf-date">'                + khachHang.ngaySinh    + '</td>' +
+                        '<td class="colf-large text-center">'   + khachHang.cccd        + '</td>' +
+                        '<td class="colf-large text-center">'   + khachHang.soDienThoai + '</td>' +
+                        '<td class="colf-xl-large">'            + khachHang.email       + '</td>' +
+                        '<td class="colf-xl-large">'            + khachHang.diaChi      + '</td>' +
+                        '<td class="colf-status text-center">'  + statusDesc            + '</td>' +
+                        '<td class="colf-xxl-large text-center">' +
+                            '<a href="javascript:;" data-tooltip="true" title="Thêm" ' +
+                                'class="not-click" onclick="openDialogSanPham(\'add\'\,' + hoaDons[i].idDonHang + ')">' +
+                                '<span class="icon nc-icon-outline shopping_cart not-click"></span>' +
+                            '</a>' +
+                            '<a href="javascript:;" data-tooltip="true" title="Sửa" ' +
+                                'class="not-click" onclick="">' +
+                                '<span class="nc-icon-outline ui-1_edit-76 not-click"></span>' +
+                            '</a>' +
+                            '<a href="javascript:;" data-tooltip="true" title="Xóa" ' +
+                                'class="not-click" onclick="">' +
+                                '<span class="nc-icon-outline ui-1_trash-simple not-click"></span>' +
+                            '</a></td>' +
+                        '</tr>').appendTo("#danhSachHoaDonKhachHang");
+                });
+            }
+
+        }
+    }
+
+    function getChiTietDonHang(idDonHang = 0) {
+        lib.getApi({
+            url: $("#PageContext").val() + '/get-chi-tiet-don-hang',
+            data: {
+                idDonHang: idDonHang,
+            },
+            complete: function (response) {
+                renderChiTietHoaDon(response.chiTietDonHangs);
+            },
+            error: function (ex) {}
+        });
+
+        function renderChiTietHoaDon(data){
+            if (data){
+                $("#chiTietDonHang").empty();
+                const vat = 0;
+                const dvt = 'Cái';
+                $.each(data, function (i) {
+                    let stt = i + 1;
+                    let sanPham = data[i].sanPhamDTO;
+                    let thanhTien = (parseInt(data[i].soLuong) * parseFloat(data[i].donGia))
+                    $('<tr class="tr-list">' +
+                        '<td class="stt text-center">'         + stt                   + '</td>' +
+                        '<td class="colf-xl-large">'           + sanPham.tenSanPham    + '</td>' +
+                        '<td class="colf-status-center">'      + dvt                   + '</td>' +
+                        '<td class="colf-status-center">'      + data[i].soLuong       + '</td>' +
+                        '<td class="colf-status-center">'      + data[i].donGia        + '</td>' +
+                        '<td class="colf-status-center">'      + vat                   + '</td>' +
+                        '<td class="colf-xl-large">'                + (thanhTien).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) + '</td>' +
+                        '<td class="colf-xl-large text-center">'    +
+                            '<a href="javascript:;" data-tooltip="true" title="Xóa" ' +
+                            'class="not-click" onclick="xoaChiTiet(' + data[i].idChiTiet + ')">' +
+                            '<span class="nc-icon-outline ui-1_trash-simple not-click"></span>' +
+                        '</a></td>' +
+                        '</tr>').appendTo("#chiTietDonHang");
+                });
+            }
+
+        }
     }
 </script>

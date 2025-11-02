@@ -5,12 +5,10 @@ import com.csdl.group_one.relationdb.dto.SanPhamDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -42,5 +40,11 @@ public class DanhMucController {
         mapResult.put("errorCode", result);
         mapResult.put("message", message);
         return mapResult;
+    }
+
+    @ResponseBody
+    @GetMapping("/get-danh-muc-san-pham")
+    public List<SanPhamDTO> doSanPham(@RequestParam (value = "rownum", required = false, defaultValue = "100") int rownum){
+        return danhMucDAO.querySanPham(rownum);
     }
 }

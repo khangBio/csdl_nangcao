@@ -3,6 +3,8 @@ package com.csdl.group_one.relationdb.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KhachHangDTO {
     @JsonProperty("idKhachHang")
@@ -23,6 +25,9 @@ public class KhachHangDTO {
     private String diaChi;
     @JsonProperty("hinhAnhKhachHang")
     private String hinhAnhKhachHang;
+
+    @JsonProperty("danhSachDonHang")
+    private List<DonHangDTO> danhSachDonHang;
 
     public Integer getIdKhachHang() {
         return idKhachHang;
@@ -94,5 +99,17 @@ public class KhachHangDTO {
 
     public void setHinhAnhKhachHang(String hinhAnhKhachHang) {
         this.hinhAnhKhachHang = hinhAnhKhachHang;
+    }
+
+    public void setIdKhachHang(int idKhachHang) {
+        this.idKhachHang = idKhachHang;
+    }
+
+    public List<DonHangDTO> getDanhSachDonHang() {
+        return danhSachDonHang;
+    }
+
+    public void setDanhSachDonHang(List<DonHangDTO> danhSachDonHang) {
+        this.danhSachDonHang = danhSachDonHang;
     }
 }
