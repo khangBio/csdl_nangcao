@@ -287,6 +287,7 @@
                 }else {
                     lib.showMessage('' + res.errorMessage, 'success', function () {
                         $("#soHoaDonKhachHang").val(res.maDonHang);
+                        getListHoaDonOfKhachHang(idKhachHang, '-1');
                     });
                 }
             },
@@ -365,16 +366,15 @@
 
     function huyThongTin(){
         $("#formThongTinKhachHang").pathValue({
-                maDonHang: "",
-                ngayHoaDon: "",
-                hoTen: "",
-                cccd: "",
-                ngaySinh: "",
-                email: "",
-                soDienThoai: "",
-                diaChi: ""
-            }
-        )
+            soHoaDonKhachHang: "",
+            ngayHoaDon: "",
+            hoTenKhachHang: "",
+            cccdKhachHang: "",
+            ngaySinhKhachHang: "",
+            emailKhachHang: "",
+            sdtKhachHang: "",
+            diaChiKhachHang: ""
+            });
         $("#idKhachHang").val(0);
         $("#btn-tao-hoa-don").hide();
     }
@@ -387,8 +387,6 @@
                 soHoaDon: soHoaDon
             },
             complete: function (response) {
-                debugger;
-                console.log(response);
                 renderDanhSachHoaDon(response);
             },
             error: function (ex) {}
