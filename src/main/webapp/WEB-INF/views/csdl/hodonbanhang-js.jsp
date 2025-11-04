@@ -465,7 +465,7 @@
                         '<td class="colf-xl-large">'                + (thanhTien).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) + '</td>' +
                         '<td class="colf-xl-large text-center">'    +
                             '<a href="javascript:;" data-tooltip="true" title="Xóa" ' +
-                            'class="not-click" onclick="xoaChiTiet(' + data[i].idChiTiet + ')">' +
+                            'class="not-click" onclick="xoaChiTietDonHang(' + data[i].idChiTiet + ')">' +
                             '<span class="nc-icon-outline ui-1_trash-simple not-click"></span>' +
                         '</a></td>' +
                         '</tr>').appendTo("#chiTietDonHang");
@@ -473,6 +473,40 @@
             }
 
         }
+    }
+
+    function xoaChiTietDonHang(idChiTiet = 0){
+        lib.post({
+            url: $("#PageContext").val() + "/do-chi-tiet-don-hang",
+            data: JSON.stringify({
+                idDonHang: 0,
+                idChiTiet: idChiTiet,
+                soLuong: 0,
+                donGia: 0,
+                idSanPham: 0,
+                trangThai: 0,
+            }),
+            beforePost:function(){
+                $("#form-danh-muc-san-pham").uiLoading(true);
+            },
+            complete: function (response) {
+                $("#form-danh-muc-san-pham").uiLoading(false);
+                var res = response.responseJSON;
+                if (res.errorCode < 0){
+                    lib.showMessage('' + res.errorMessage, 'error', function () {
+                        //
+                    });
+                }else {
+                    lib.showMessage('' + res.errorMessage, 'success', function () {
+                        let idDonHang = $("#id-don-hang").val();
+                        getChiTietDonHang(idDonHang);
+                    });
+                }
+            },
+            error: function (ex) {
+                $("#form-danh-muc-san-pham").uiLoading(false);
+            }
+        });
     }
 
     function thanhToan() {
