@@ -396,6 +396,7 @@
             if (data){
                 let khachHang = data;
                 let hoaDons = data.danhSachDonHang;
+                $("#danhSachHoaDonKhachHang").empty();
                 $.each(hoaDons, function (i) {
                     let stt = i + 1;
                     let statusDesc = hoaDons[i].trangThai == 1 ? 'Đã thanh toán' : (hoaDons[i].trangThai == 2 ? 'Đã hủy' : 'Chưa thanh toán');
