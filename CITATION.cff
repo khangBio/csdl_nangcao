@@ -1,0 +1,28 @@
+```yaml
+cff-version: 1.0
+title: "Hệ thống Thương mại Điện tử – Mô hình phân tán dữ liệu (SQL Server & MongoDB)"
+message: "Nếu bạn sử dụng mã nguồn hoặc tài liệu từ repository này, vui lòng trích dẫn như sau."
+type: software
+
+authors:
+  - family-names: Tran
+    given-names: Ngoc Khang
+
+year: 2025
+version: 1.0.0
+license: MIT
+
+repository-code: "https://github.com/khangBio/csdl_nangcao"
+url: "https://github.com/khangBio/csdl_nangcao"
+
+abstract: >
+  Dự án xây dựng hệ thống thương mại điện tử áp dụng mô hình phân tán dữ liệu,
+  kết hợp SQL Server và MongoDB nhằm nâng cao khả năng mở rộng, hiệu năng
+  và độ tin cậy của hệ thống.
+
+keywords:
+  - E-commerce
+  - Distributed Database
+  - SQL Server
+  - MongoDB
+  - Information Systems

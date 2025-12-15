@@ -53,3 +53,12 @@ Sự phát triển nhanh chóng của thương mại điện tử đòi hỏi c�
 Dự án được phát hành theo giấy phép MIT, cho phép sử dụng, chỉnh sửa và phân phối
 một cách tự do cho mục đích học tập và thương mại. Tác giả không chịu trách nhiệm
 đối với mọi rủi ro phát sinh trong quá trình sử dụng phần mềm.
+
+## Contributing
+Mọi đóng góp cho dự án đều được hoan nghênh.
+Vui lòng xem chi tiết tại file [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Citation
+Nếu bạn sử dụng mã nguồn hoặc tài liệu từ repository này trong bài báo,
+luận văn hoặc nghiên cứu khoa học, vui lòng trích dẫn theo hướng dẫn trong
+file [CITATION.cff](CITATION.cff).
